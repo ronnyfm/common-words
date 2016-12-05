@@ -15,8 +15,8 @@ class WordUtils {
             ",", "\\.", "\\?", ";",
             " \\(", "\\) ",
             " a ", " de ", " e ",
-            " el ", " me ", " le ", " o ",
-            " que ", " se ", " u ", " y "
+            " el ", " me ", " la ", " le ", "los",
+            " o ", " que ", " se ", " u ", " y "
         ];
     }
 
@@ -24,15 +24,18 @@ class WordUtils {
      * Clean input text, sorting by number of appearences.
      */
     cleanText(){
-        // First replace digits
+        // First, all to lower case
+        this.text = this.text.toLowerCase();
+
+        // Second replace digits
         this.text = this.text.replace(/(\d*\s)/g, " ");
 
-        // Second, apply filter list
+        // Third, apply filter list
         for(const value of this.exclusion){
             this.text = this.text.replace(new RegExp(value, 'g'), " ");
         }
 
-        // Third, split
+        // Fourth, split
         return this.text.split(/\s+/);;
     }
 
@@ -60,20 +63,44 @@ class WordUtils {
     }
 
     /**
-     * Sort the map
+     * Sort the map, sending the elements to a new array, then calling array.sort, then reversing.
      */
     sort(){
-        var iterator = this.group().entries();
+        var map = this.group();
+        var sortedArray = [];
+
+        map.forEach(function(value, key){
+            sortedArray.push({"word": key, "count": value});
+        });
+
+        return sortedArray.sort(this.compare);
+    }
+
+    /**
+     * Compare word:count objects.
+     * 
+     * @param a object to compare
+     * @param b object to compare
+     */
+    compare(a, b){
+        return b.count - a.count;
     }
 
     get result(){
         // Clean, then return
-        return this.group();                        
+        return this.sort();                        
     }
 }
 
 // Testing
 var input = document.getElementById("text").value
 var utils = new WordUtils(input);
+var result = "";
 
-console.log(utils.result);
+for(const element of utils.result){
+    let output = `<p>Palabra: ${element.word.replace(/\b\w/g, l => l.toUpperCase())}: ${element.count}`;
+
+    result += output;
+}
+
+document.write(result);
