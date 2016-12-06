@@ -92,15 +92,34 @@ class WordUtils {
     }
 }
 
-// Testing
-var input = document.getElementById("text").value
-var utils = new WordUtils(input);
-var result = "";
+class UIManager {
+    /**
+     * Default constructor          
+     */
+    constructor(){
+        this.input;
+    }
 
-for(const element of utils.result){
-    let output = `<p>Palabra: ${element.word.replace(/\b\w/g, l => l.toUpperCase())}: ${element.count}`;
+    /**
+     * 
+     */
+    get processInput(){
+        this.input = document.getElementById("text").value;
+        let utils = new WordUtils(this.input);
 
-    result += output;
+        let result = "";
+
+        for(const element of utils.result){
+            let output = `<p>Palabra: ${element.word.replace(/\b\w/g, l => l.toUpperCase())}: ${element.count}`;
+
+            result += output;
+        }
+
+        document.write(result);
+    }
 }
 
-document.write(result);
+var ui = new UIManager();
+var el = document.getElementById("search-btn");
+
+el.addEventListener("click", ui.processInput, false);
